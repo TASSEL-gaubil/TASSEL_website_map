@@ -1,4 +1,30 @@
 <!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAltD6Kd7wGiuY6dDsDwYavGL45e03BvLA&callback=initMap" 
+    async defer></script>
+    <script>
+      function initMap() {
+        var myLatLng = {lat: -34.397, lng: 150.644};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: myLatLng
+        });
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Hello World!'
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="height: 400px;"></div>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -11,4 +37,4 @@
     <h1>Hello Clara</h1>
 </body>
 
-</html>
+</html> -->
