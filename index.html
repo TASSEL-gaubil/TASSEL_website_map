@@ -1,40 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Simple Map</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAltD6Kd7wGiuY6dDsDwYavGL45e03BvLA&callback=initMap" 
-    async defer></script>
-    <script>
-      function initMap() {
-        var myLatLng = {lat: -34.397, lng: 150.644};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 8,
-          center: myLatLng
-        });
-        var marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Hello World!'
-        });
-      }
-    </script>
-  </head>
-  <body>
-    <div id="map" style="height: 400px;"></div>
-  </body>
+    <head>
+        <title>Koumbia Map</title>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAltD6Kd7wGiuY6dDsDwYavGL45e03BvLA&callback=initMap" 
+        async defer></script>
+        <script>
+            // fonction qui est appelée lorsque l'API google map est chargée
+            function initMap() {
+                // study area = 2000 km^2 in Burkina Faso around the town of Koumbia
+                var centerCoordinates = {lat: 11.165, lng: -3.655};
+
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 8,
+                    center: centerCoordinates
+                });
+
+                // Marqueur (point rouge) centré sur la zone d'étude
+                var marker = new google.maps.Marker({
+                    position: centerCoordinates,
+                    map: map,
+                    title: 'Hello World!'
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div id="map" style="height: 100vh; width: 100%;"></div>
+    </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello Clara</title>
-</head>
-
-<body>
-    <h1>Hello Clara</h1>
-</body>
-
-</html> -->
