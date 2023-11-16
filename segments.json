@@ -1,0 +1,9 @@
+[
+    {
+        "segment_id": 1,
+        "coordinates": [
+            { "lat": 11.2, "lng": -3.8 },
+            { "lat": 11.3, "lng": -3.7 }
+        ]
+    }
+]
