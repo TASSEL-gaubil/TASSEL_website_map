@@ -180,11 +180,17 @@
                             document.getElementById("info-content").innerHTML = infoContent; // affiche le segment ID dans info-panel -> info-content
                             toggleInfoPanel(); // Open or hide the panel when an area is clicked
 
-                            // permet d'avior les coordonées du polygone
-                            const polygon = new google.maps.Polygon({
-                                paths: polygonCoordinates,
-                                map: map,
-                            });
+                            // permet d'avoir les coordonées du polygone
+                            // const polygon = new google.maps.Polygon({
+                            //     paths: polygonCoordinates,
+                            //     map: map,
+                            // });
+
+                            // Récupérer les coordonnées du polygone cliqué
+                            const polygonCoordinates = areaData.coordinates.map(coord => ({
+                                lat: parseFloat(coord.lat),
+                                lng: parseFloat(coord.lng)
+                            }));
 
                             // Calculer le centre géométrique du polygone
                             const centerLat = polygonCoordinates.reduce((sum, coord) => sum + coord.lat, 0) / polygonCoordinates.length;
