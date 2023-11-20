@@ -2,12 +2,12 @@
     {
         "segment_id": 1,
         "coordinates": [
-            { "lat": 11.25, "lng": -3.75 },
-            { "lat": 11.27, "lng": -3.72 },
-            { "lat": 11.28, "lng": -3.85 },
-            { "lat": 11.29, "lng": -3.80 },
-            { "lat": 11.26, "lng": -3.80 },
-            { "lat": 11.25, "lng": -3.75 } 
+            { "lat": 11.25, "lng": -3.75, "intensity": 10 },
+            { "lat": 11.27, "lng": -3.72, "intensity": 5 },
+            { "lat": 11.28, "lng": -3.85, "intensity": 8 },
+            { "lat": 11.29, "lng": -3.80, "intensity": 12 },
+            { "lat": 11.26, "lng": -3.80, "intensity": 15 },
+            { "lat": 11.23, "lng": -3.65, "intensity": 18 } 
         ]
     }
 ]

@@ -11,13 +11,16 @@
             padding: 0;
             overflow: hidden;
         }
+        /* carte de base */
         #map-container {
             position: absolute;
             top: 40px;
             left: 0;
             width: 100%;
-            height: 100%;
+            /* height: 95%; */
+            height: calc(100% - 40px);
         }
+        /* menu en haut (menu info contact) */
         #nav-menu {
             position: absolute;
             top: 0;
@@ -38,6 +41,7 @@
             padding: 10px 20px;
             cursor: pointer;
         }
+        /* panel segment à droite */
         #info-panel {
             position: absolute;
             top: 40px;
@@ -60,9 +64,13 @@
             border-top: 10px solid #3a1414;
             cursor: pointer;
         }
+        /* map google API */
         #map-in-panel {
             width: 100%;
-            height: 100%;
+            height: calc(100% - 40px);
+        }
+        #info-content {
+            height: 40px;
         }
     </style>
 </head>
@@ -91,27 +99,11 @@
         </div>
     </div>
 
-    <!-- <div id="heatmap-container">
-        <div id="heatmap"></div>
-    </div> -->
-
     <script>
         let infoPanelVisible = false;
         let mapInPanel;
         let map;
-        // let heatmap;
-        // let heatmapContainerVisible = false;
-
-        // function toggleHeatmapContainer() {
-        //     const heatmapContainer = document.getElementById("heatmap-container");
-        //     heatmapContainerVisible = !heatmapContainerVisible;
-
-        //     if (heatmapContainerVisible) {
-        //         heatmapContainer.style.width = "50%"; // Show the heatmap container
-        //     } else {
-        //         heatmapContainer.style.width = "0"; // Hide the heatmap container
-        //     }
-        // }
+        let heatmap;
 
         function toggleInfoPanel() {
             const infoPanel = document.getElementById("info-panel");
@@ -180,16 +172,11 @@
                             document.getElementById("info-content").innerHTML = infoContent; // affiche le segment ID dans info-panel -> info-content
                             toggleInfoPanel(); // Open or hide the panel when an area is clicked
 
-                            // permet d'avoir les coordonées du polygone
-                            // const polygon = new google.maps.Polygon({
-                            //     paths: polygonCoordinates,
-                            //     map: map,
-                            // });
-
                             // Récupérer les coordonnées du polygone cliqué
                             const polygonCoordinates = areaData.coordinates.map(coord => ({
                                 lat: parseFloat(coord.lat),
-                                lng: parseFloat(coord.lng)
+                                lng: parseFloat(coord.lng),
+                                intensity: parseFloat(coord.intensity)
                             }));
 
                             // Calculer le centre géométrique du polygone
@@ -199,40 +186,38 @@
                             // Create a new map in the panel centered on the clicked area -> ON VEUT HEAT MAP
                             const mapOptions = {
                                 center: new google.maps.LatLng(centerLat, centerLng),
-                                zoom: 18,
+                                zoom: 7,
                             };
                             mapInPanel = new google.maps.Map(document.getElementById("map-in-panel"), mapOptions);
 
-                            // superposition d'image:
-                            // limite de la superposition d'image
-                            // const imageBounds = new google.maps.LatLngBounds(
-                            //     new google.maps.LatLng(areaData.coordinates[0].lat, areaData.coordinates[0].lng),
-                            //     new google.maps.LatLng(areaData.coordinates[1].lat, areaData.coordinates[1].lng)
-                            // );
-                            // const imageOverlay = new google.maps.GroundOverlay(
-                            //     areaData.image, // Image URL
-                            //     imageBounds
-                            // );
-                            // imageOverlay.setMap(mapInPanel);
+                            // Initialize the heatmap layer
+                            const heatmapData = polygonCoordinates.map(coord => ({
+                                location: new google.maps.LatLng(coord.lat, coord.lng),
+                                weight: coord.intensity
+                            }));
+
+                            // Add console.log for debugging
+                            console.log('polygonCoordinates V2336:', polygonCoordinates);
+                            console.log('heatmapData:', heatmapData);
+
+                            heatmap = new google.maps.visualization.HeatmapLayer({
+                                data: heatmapData,
+                                dissipating: true,
+                                radius: 50,
+                                opacity: 0.7,
+                                map: mapInPanel,
+                            });
+                            //heatmap.setMap(mapInPanel);
+
                         });
                     });
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
                 });
-
-            // Add click event listener to the polygon to toggle heatmap container
-            // google.maps.event.addListener(polygon, 'click', function (event) {
-            //     toggleHeatmapContainer();
-
-            //     // Initialize or update the heatmap when the container is visible
-            //     if (heatmapContainerVisible) {
-            //         initializeHeatmap(heatmapData);
-            //     }
-            // });
         }
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAltD6Kd7wGiuY6dDsDwYavGL45e03BvLA&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAltD6Kd7wGiuY6dDsDwYavGL45e03BvLA&libraries=visualization&callback=initMap" async defer></script>
 </body>
 </html>
