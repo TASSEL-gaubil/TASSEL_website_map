@@ -180,9 +180,19 @@
                             document.getElementById("info-content").innerHTML = infoContent; // affiche le segment ID dans info-panel -> info-content
                             toggleInfoPanel(); // Open or hide the panel when an area is clicked
 
+                            // permet d'avior les coordonées du polygone
+                            const polygon = new google.maps.Polygon({
+                                paths: polygonCoordinates,
+                                map: map,
+                            });
+
+                            // Calculer le centre géométrique du polygone
+                            const centerLat = polygonCoordinates.reduce((sum, coord) => sum + coord.lat, 0) / polygonCoordinates.length;
+                            const centerLng = polygonCoordinates.reduce((sum, coord) => sum + coord.lng, 0) / polygonCoordinates.length;
+
                             // Create a new map in the panel centered on the clicked area -> ON VEUT HEAT MAP
                             const mapOptions = {
-                                center: new google.maps.LatLng(areaData.coordinates[0].lat, areaData.coordinates[0].lng),
+                                center: new google.maps.LatLng(centerLat, centerLng),
                                 zoom: 18,
                             };
                             mapInPanel = new google.maps.Map(document.getElementById("map-in-panel"), mapOptions);
