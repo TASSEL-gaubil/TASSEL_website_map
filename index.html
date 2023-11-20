@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Koumbia Map</title>
+    <!-- CSS, mise en page -->
     <style>
         body {
             margin: 0;
@@ -66,14 +67,20 @@
     </style>
 </head>
 <body>
+    <!-- section menu de la page -->
     <div id="nav-menu">
         <ul>
+            <!-- lien hypertextes qui renvoient vers les sections dont l'ID est #menu, #infos et #contact. A DEFINIR -->
             <li><a href="#menu" style="text-decoration: none; color: #fff;">Menu</a></li>
             <li><a href="#infos" style="text-decoration: none; color: #fff;">Infos</a></li>
             <li><a href="#contact" style="text-decoration: none; color: #fff;">Contact</a></li>
         </ul>
     </div>
+
+    <!-- map  -->
     <div id="map-container"></div>
+
+    <!-- panel qui apparait quand on clique sur segment -->
     <div id="info-panel">
         <div id="info-content">
             <!-- Data will be displayed here when an area is clicked -->
@@ -83,9 +90,11 @@
             <!-- New map will be displayed here when an area is clicked -->
         </div>
     </div>
+
     <!-- <div id="heatmap-container">
         <div id="heatmap"></div>
     </div> -->
+
     <script>
         let infoPanelVisible = false;
         let mapInPanel;
@@ -115,15 +124,43 @@
             }
         }
 
+        // fonction qui est appelée lorsque l'API google map est chargée (javascript)
         function initMap() {
-            map = new google.maps.Map(document.getElementById("map-container"), {
-                center: { lat: 11.166, lng: -3.655 }, // Centered around Koumbia
-                zoom: 12,
+            // study area = 2000 km^2 in Burkina Faso around the town of Koumbia
+            // objets avec les propriétés lat et lng
+            var topLeft = {lat: 11.37, lng: -3.89};
+            var topRight = {lat: 11.37, lng: -3.42};
+            var bottomRight = {lat: 10.96, lng: -3.42};
+            var bottomLeft = {lat: 10.96, lng: -3.89};
+
+            // Calculer le centre de la bounding box
+            var centerCoordinates = {
+                lat: (topLeft.lat + bottomRight.lat) / 2,
+                lng: (topLeft.lng + bottomRight.lng) / 2
+            };
+
+            // charger la carte
+            map = new google.maps.Map(document.getElementById('map-container'), {
+                zoom: 8,
+                center: centerCoordinates
             });
 
-            // Fetch data from the JSON file
+            // Créer une forme de rectangle pour représenter la bounding box
+            var boundingBox = new google.maps.Polygon({
+                map: map,
+                paths: [topLeft, topRight, bottomRight, bottomLeft],
+                strokeColor: '#FF0000', // rouge
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.2
+            });
+
+            // recupérer les coordonnées des segments à partir du fichier JSON (requête fetch)
             fetch('segments.json')
+                // convertit la réponse en JSON
                 .then(response => response.json())
+                // traitement des donnnées récupérées
                 .then(data => {
                     // Loop through the data and create polygons for each area
                     data.forEach((areaData) => {
@@ -138,27 +175,29 @@
                         // Add click event listener to the polygon to open the info panel with data
                         polygon.addListener("click", () => {
                             const infoContent = `
-                                <h3>${areaData.name}</h3>
-                                <p>${areaData.description}</p>
+                                <h3>Segment ID: ${areaData.segment_id}</h3>
                             `;
-                            document.getElementById("info-content").innerHTML = infoContent;
+                            document.getElementById("info-content").innerHTML = infoContent; // affiche le segment ID dans info-panel -> info-content
                             toggleInfoPanel(); // Open or hide the panel when an area is clicked
 
-                            // Create a new map in the panel centered on the clicked area
+                            // Create a new map in the panel centered on the clicked area -> ON VEUT HEAT MAP
                             const mapOptions = {
                                 center: new google.maps.LatLng(areaData.coordinates[0].lat, areaData.coordinates[0].lng),
                                 zoom: 18,
                             };
                             mapInPanel = new google.maps.Map(document.getElementById("map-in-panel"), mapOptions);
-                            const imageBounds = new google.maps.LatLngBounds(
-                                new google.maps.LatLng(areaData.coordinates[0].lat, areaData.coordinates[0].lng),
-                                new google.maps.LatLng(areaData.coordinates[1].lat, areaData.coordinates[1].lng)
-                            );
-                            const imageOverlay = new google.maps.GroundOverlay(
-                                areaData.image, // Image URL
-                                imageBounds
-                            );
-                            imageOverlay.setMap(mapInPanel);
+
+                            // superposition d'image:
+                            // limite de la superposition d'image
+                            // const imageBounds = new google.maps.LatLngBounds(
+                            //     new google.maps.LatLng(areaData.coordinates[0].lat, areaData.coordinates[0].lng),
+                            //     new google.maps.LatLng(areaData.coordinates[1].lat, areaData.coordinates[1].lng)
+                            // );
+                            // const imageOverlay = new google.maps.GroundOverlay(
+                            //     areaData.image, // Image URL
+                            //     imageBounds
+                            // );
+                            // imageOverlay.setMap(mapInPanel);
                         });
                     });
                 })
