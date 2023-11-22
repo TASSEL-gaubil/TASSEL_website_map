@@ -17,7 +17,6 @@
             top: 40px;
             left: 0;
             width: 100%;
-            /* height: 95%; */
             height: calc(100% - 40px);
         }
         /* menu en haut (menu info contact) */
@@ -31,12 +30,14 @@
             color: #fff; /* Text color for the menu items */
             z-index: 999;
         }
+        /* liste des 3 element menus info et contact */
         #nav-menu ul {
             list-style: none;
             padding: 0;
             margin: 0;
             display: flex;
         }
+        /* chaque element de la liste de la barre */
         #nav-menu li {
             padding: 10px 20px;
             cursor: pointer;
@@ -64,13 +65,23 @@
             border-top: 10px solid #3a1414;
             cursor: pointer;
         }
-        /* map google API */
+        /* map google API dans le panel*/
         #map-in-panel {
             width: 100%;
-            height: calc(100% - 40px);
+            height: calc(100% - 80px);
         }
+        /* bandeau info segment ID */
         #info-content {
-            height: 40px;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        }
+        /* segment ID définit plus bas, on enlève la marge */
+        #info-content h3 {
+            margin: 0;
         }
     </style>
 </head>
@@ -133,7 +144,7 @@
 
             // charger la carte
             map = new google.maps.Map(document.getElementById('map-container'), {
-                zoom: 8,
+                zoom: 10,
                 center: centerCoordinates
             });
 
@@ -186,7 +197,7 @@
                             // Create a new map in the panel centered on the clicked area -> ON VEUT HEAT MAP
                             const mapOptions = {
                                 center: new google.maps.LatLng(centerLat, centerLng),
-                                zoom: 7,
+                                zoom: 11,
                             };
                             mapInPanel = new google.maps.Map(document.getElementById("map-in-panel"), mapOptions);
 
@@ -197,7 +208,7 @@
                             }));
 
                             // Add console.log for debugging
-                            console.log('polygonCoordinates V2336:', polygonCoordinates);
+                            console.log('polygonCoordinates V1033:', polygonCoordinates);
                             console.log('heatmapData:', heatmapData);
 
                             heatmap = new google.maps.visualization.HeatmapLayer({
