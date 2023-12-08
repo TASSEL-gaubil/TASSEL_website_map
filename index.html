@@ -197,7 +197,7 @@
             });
 
             // recupérer les coordonnées des segments à partir du fichier JSON (requête fetch)
-            fetch('segments.json')
+            fetch('data.json')
                 // convertit la réponse en JSON
                 .then(response => response.json())
                 // traitement des donnnées récupérées
@@ -206,8 +206,8 @@
                     data.forEach((areaData) => {
                         const polygon = new google.maps.Polygon({
                             paths: areaData.coordinates.map(coord => ({
-                                lat: parseFloat(coord.lat),
-                                lng: parseFloat(coord.lng)
+                                lat: parseFloat(coord.latitude),
+                                lng: parseFloat(coord.longitude)
                             })),
                             map: map,
                         });
@@ -222,8 +222,8 @@
 
                             // Récupérer les coordonnées du polygone cliqué
                             const polygonCoordinates = areaData.coordinates.map(coord => ({
-                                lat: parseFloat(coord.lat),
-                                lng: parseFloat(coord.lng),
+                                lat: parseFloat(coord.latitude),
+                                lng: parseFloat(coord.latitude),
                                 intensity: parseFloat(coord.intensity)
                             }));
 
@@ -245,7 +245,7 @@
                             }));
 
                             // Add console.log for debugging
-                            console.log('polygonCoordinates V1232:', polygonCoordinates);
+                            console.log('polygonCoordinates V1611:', polygonCoordinates);
                             console.log('heatmapData:', heatmapData);
 
                             heatmap = new google.maps.visualization.HeatmapLayer({
