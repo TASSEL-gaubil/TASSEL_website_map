@@ -148,6 +148,7 @@
     </div>
 
     <script>
+        console.log("V1947")
         let infoPanelVisible = false;
         let mapInPanel;
         let map;
@@ -163,6 +164,54 @@
                 infoPanel.style.transform = "translateX(100%)"; // Hide the panel
             }
         }
+
+        function getPerimeterPixels(coordinates) {
+            // Function to calculate the cross product of vectors (p1p2) and (p1p3)
+            function crossProduct(p1, p2, p3) {
+                return (p2.longitude - p1.longitude) * (p3.latitude - p1.latitude) -
+                    (p2.latitude - p1.latitude) * (p3.longitude - p1.longitude);
+            }
+
+            // Sort coordinates based on polar angle from the lowest y and leftmost x
+            const sortedCoordinates = coordinates.sort((a, b) => {
+                if (a.latitude === b.latitude) {
+                    return a.longitude - b.longitude;
+                }
+                return a.latitude - b.latitude;
+            });
+
+            // Build the upper hull
+            const upperHull = [];
+            for (const coord of sortedCoordinates) {
+                while (upperHull.length >= 2 && crossProduct(
+                    upperHull[upperHull.length - 2],
+                    upperHull[upperHull.length - 1],
+                    coord
+                ) <= 0) {
+                    upperHull.pop();
+                }
+                upperHull.push(coord);
+            }
+
+            // Build the lower hull
+            const lowerHull = [];
+            for (const coord of sortedCoordinates.reverse()) {
+                while (lowerHull.length >= 2 && crossProduct(
+                    lowerHull[lowerHull.length - 2],
+                    lowerHull[lowerHull.length - 1],
+                    coord
+                ) <= 0) {
+                    lowerHull.pop();
+                }
+                lowerHull.push(coord);
+            }
+
+            // Concatenate the upper and lower hulls to get the convex hull
+            const convexHull = upperHull.slice(0, upperHull.length).concat(lowerHull.slice(0, lowerHull.length));
+
+            return convexHull;
+        }
+
 
         // fonction qui est appelée lorsque l'API google map est chargée (javascript)
         function initMap() {
@@ -217,19 +266,25 @@
                         const coordinates = areaData.coordinates.map(coord => ({
                             lat: parseFloat(coord.latitude),
                             lng: parseFloat(coord.longitude),
-                            intensity: parseFloat(coord.intensity)
+                            intensity: parseFloat(coord.intensity),
+                            //map: map
                         }));
                         
                         // Get the perimeter pixels
                         const perimeterPixels = getPerimeterPixels(coordinates);
                         // Create a polygon with perimeter pixels
-                        const permieterpolygon = new google.maps.Polygon({
+                        const perimeterPolygon = new google.maps.Polygon({
                             paths: perimeterPixels,
                             map: map,
+                            strokeColor: '#FF0000', // Red outline
+                            strokeOpacity: 1,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.2
                         });
 
                         // Add click event listener to the polygon to open the info panel with data
-                        polygon.addListener("click", () => {
+                        perimeterPolygon.addListener("click", () => {
 
                             const infoContent = `
                                 <h3>Segment ID: ${areaData.segment_id}</h3>
@@ -244,9 +299,9 @@
                                 intensity: parseFloat(coord.intensity)
                             }));
 
-                            console.log('coucou')
+                            //console.log('coucou')
                             // Calculate the perimeter of the polygon
-                            const perimeter = calculatePerimeter(polygonCoordinates);
+                            const perimeter = getPerimeterPixels(polygonCoordinates);
 
                             // Calculer le centre géométrique du polygone
                             const centerLat = polygonCoordinates.reduce((sum, coord) => sum + coord.lat, 0) / polygonCoordinates.length;
@@ -266,7 +321,7 @@
                             }));
 
                             // Add console.log for debugging
-                            console.log('polygonCoordinates V1814:', polygonCoordinates);
+                            console.log('polygonCoordinates V1912:', polygonCoordinates);
                             console.log('heatmapData:', heatmapData);
 
                             heatmap = new google.maps.visualization.HeatmapLayer({
@@ -293,82 +348,24 @@
 
                         });
 
-                        function getPerimeterPixels(coordinates) {
-                            const perimeterPixels = [];
+                        // function getPerimeterPixels(coordinates) {
+                        //     const perimeterPixels = [];
+                        //     console.log("getPerimeterPixels")
+                        //     // Iterate through each polygon
+                        //     coordinates.forEach(polygonCoordinates => {
+                        //         // Iterate through each line (excluding the first and last)
+                        //         for (let i = 1; i < polygonCoordinates.length - 1; i++) {
+                        //             const line = polygonCoordinates[i];
 
-                            // Add all pixels of the first row directly to the perimeter
-                            perimeterPixels.push(...coordinates[0]);
+                        //             // Add the first and last pixels of each line to the perimeter
+                        //             perimeterPixels.push(line[0]);
+                        //             perimeterPixels.push(line[line.length - 1]);
+                        //         }
+                        //     });
 
-                            // Iterate through each line (excluding the first and last)
-                            for (let i = 1; i < coordinates.length - 1; i++) {
-                                const line = coordinates[i];
-
-                                // Add the first and last pixels of each line to the perimeter
-                                perimeterPixels.push(line[0]);
-                                perimeterPixels.push(line[line.length - 1]);
-                            }
-
-                            // Add all pixels of the last row directly to the perimeter
-                            perimeterPixels.push(...coordinates[coordinates.length - 1]);
-
-                            return perimeterPixels;
-                        }
-
-                        // Function to calculate the perimeter of a polygon
-                        // function calculatePerimeter(coordinates) {
-                        //     let perimeter = 0;
-
-                        //     for (let i = 0; i < coordinates.length - 1; i++) {
-                        //         const lat1 = coordinates[i].latitude;
-                        //         const lng1 = coordinates[i].longitude;
-                        //         const lat2 = coordinates[i + 1].latitude;
-                        //         const lng2 = coordinates[i + 1].longitude;
-
-                        //         // Calculate the distance between consecutive pairs of coordinates
-                        //         const distance = calculateDistance(lat1, lng1, lat2, lng2);
-
-                        //         // Add the distance to the perimeter
-                        //         perimeter += distance;
-                        //     }
-
-                        //     // Close the polygon by connecting the last and first coordinates
-                        //     const latFirst = coordinates[0].latitude;
-                        //     const lngFirst = coordinates[0].longitude;
-                        //     const latLast = coordinates[coordinates.length - 1].latitude;
-                        //     const lngLast = coordinates[coordinates.length - 1].longitude;
-
-                        //     const closingDistance = calculateDistance(latFirst, lngFirst, latLast, lngLast);
-                        //     perimeter += closingDistance;
-
-                        //     console.log('calculatePerimeter', perimeter)
-
-                        //     return perimeter;
+                        //     return perimeterPixels;
                         // }
 
-                        // // Function to calculate the distance between two sets of coordinates using the Haversine formula
-                        // function calculateDistance(lat1, lng1, lat2, lng2) {
-                        //     const earthRadius = 6371; // Earth radius in kilometers
-                        //     const dLat = toRadians(lat2 - lat1);
-                        //     const dLng = toRadians(lng2 - lng1);
-
-                        //     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                        //             Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-                        //             Math.sin(dLng / 2) * Math.sin(dLng / 2);
-
-                        //     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-                        //     const distance = earthRadius * c;
-
-                        //     console.log('calculateDistance =', distance)
-
-                        //     return distance;
-                        // }
-
-                        // // Function to convert degrees to radians
-                        // function toRadians(degrees) {
-                        //     console.log('toRadians =', degrees * (Math.PI / 180))
-                        //     return degrees * (Math.PI / 180);
-                        // }
                     });
                 })
                 .catch(error => {
@@ -380,3 +377,4 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAltD6Kd7wGiuY6dDsDwYavGL45e03BvLA&libraries=visualization&callback=initMap" async defer></script>
 </body>
 </html>
+
