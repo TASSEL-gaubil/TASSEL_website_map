@@ -148,7 +148,7 @@
     </div>
 
     <script>
-        console.log("V2051")
+        console.log("V2110")
         let infoPanelVisible = false;
         let mapInPanel;
         let map;
@@ -173,27 +173,27 @@
             }
 
             // Find the point with the lowest latitude (and leftmost if there are ties)
-            const referencePoint = coordinates.reduce((min, current) => {
-                if (current.lat < min.lat || (current.lat === min.lat && current.lng < min.lng)) {
-                    return current;
-                }
-                return min;
-            });
+            // const referencePoint = coordinates.reduce((min, current) => {
+            //     if (current.lat < min.lat || (current.lat === min.lat && current.lng < min.lng)) {
+            //         return current;
+            //     }
+            //     return min;
+            // });
 
             // Sort coordinates based on polar angle from the reference point
-            const sortedCoordinates = coordinates.sort((a, b) => {
-                const angleA = Math.atan2(a.lat - referencePoint.lat, a.lng - referencePoint.lng);
-                const angleB = Math.atan2(b.lat - referencePoint.lat, b.lng - referencePoint.lng);
-                return angleA - angleB;
-            });
+            // const sortedCoordinates = coordinates.sort((a, b) => {
+            //     const angleA = Math.atan2(a.lat - referencePoint.lat, a.lng - referencePoint.lng);
+            //     const angleB = Math.atan2(b.lat - referencePoint.lat, b.lng - referencePoint.lng);
+            //     return angleA - angleB;
+            // });
 
             // Sort coordinates based on polar angle from the lowest y and leftmost x
-            // const sortedCoordinates = coordinates.sort((a, b) => {
-            //     if (a.latitude === b.latitude) {
-            //         return a.longitude - b.longitude;
-            //     }
-            //     return a.latitude - b.latitude;
-            // });
+            const sortedCoordinates = coordinates.sort((a, b) => {
+                if (a.latitude === b.latitude) {
+                    return a.longitude - b.longitude;
+                }
+                return a.latitude - b.latitude;
+            });
 
             // Build the upper hull
             const upperHull = [];
@@ -296,6 +296,21 @@
                             strokeWeight: 2,
                             fillColor: '#FF0000',
                             fillOpacity: 0.2
+                        });
+
+                        // Create a marker for each coordinate and add it to the main map
+                        coordinates.forEach(coord => {
+                            const dot = new google.maps.Marker({
+                                position: new google.maps.LatLng(coord.lat, coord.lng),
+                                map: map,
+                                icon: {
+                                    path: google.maps.SymbolPath.CIRCLE,
+                                    fillColor: '#000', // Black color for the dot
+                                    fillOpacity: 1,
+                                    scale: 3, // Adjust the size of the dot as needed
+                                    strokeWeight: 0
+                                }
+                            });
                         });
 
                         // Add click event listener to the polygon to open the info panel with data
