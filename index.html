@@ -148,7 +148,7 @@
     </div>
 
     <script>
-        console.log("V1947")
+        console.log("V2051")
         let infoPanelVisible = false;
         let mapInPanel;
         let map;
@@ -172,13 +172,28 @@
                     (p2.latitude - p1.latitude) * (p3.longitude - p1.longitude);
             }
 
-            // Sort coordinates based on polar angle from the lowest y and leftmost x
-            const sortedCoordinates = coordinates.sort((a, b) => {
-                if (a.latitude === b.latitude) {
-                    return a.longitude - b.longitude;
+            // Find the point with the lowest latitude (and leftmost if there are ties)
+            const referencePoint = coordinates.reduce((min, current) => {
+                if (current.lat < min.lat || (current.lat === min.lat && current.lng < min.lng)) {
+                    return current;
                 }
-                return a.latitude - b.latitude;
+                return min;
             });
+
+            // Sort coordinates based on polar angle from the reference point
+            const sortedCoordinates = coordinates.sort((a, b) => {
+                const angleA = Math.atan2(a.lat - referencePoint.lat, a.lng - referencePoint.lng);
+                const angleB = Math.atan2(b.lat - referencePoint.lat, b.lng - referencePoint.lng);
+                return angleA - angleB;
+            });
+
+            // Sort coordinates based on polar angle from the lowest y and leftmost x
+            // const sortedCoordinates = coordinates.sort((a, b) => {
+            //     if (a.latitude === b.latitude) {
+            //         return a.longitude - b.longitude;
+            //     }
+            //     return a.latitude - b.latitude;
+            // });
 
             // Build the upper hull
             const upperHull = [];
@@ -246,7 +261,7 @@
             });
 
             // recupérer les coordonnées des segments à partir du fichier JSON (requête fetch)
-            fetch('data.json')
+            fetch('test1_seg.json')
                 // convertit la réponse en JSON
                 .then(response => response.json())
                 // traitement des donnnées récupérées

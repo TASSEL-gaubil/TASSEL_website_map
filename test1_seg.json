@@ -1,0 +1,89 @@
+[    
+    {
+        "segment_id": 394917.0,
+        "polygon_id": 840.0,
+        "class_id": 5.0,
+        "coordinates": [
+        {
+            "latitude": 11.260658912330905,
+            "longitude": -3.5872274170427114,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260659093313743,
+            "longitude": -3.587135802104195,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.26065927426835,
+            "longitude": -3.587044187164112,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.26065945519472,
+            "longitude": -3.586952572222461,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260930213480888,
+            "longitude": -3.587227967133032,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260930394468195,
+            "longitude": -3.5871363521087076,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.26093057542727,
+            "longitude": -3.5870447370828153,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.26093075635811,
+            "longitude": -3.586953122055355,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.26083977976478,
+            "longitude": -3.5872277837680233,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260839960750598,
+            "longitude": -3.5871361687723025,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260840141708185,
+            "longitude": -3.587044553775013,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260840322637534,
+            "longitude": -3.586952938776156,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.26074934604812,
+            "longitude": -3.5872276004045838,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260749527032447,
+            "longitude": -3.587135985437465,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260749707988545,
+            "longitude": -3.587044370468779,
+            "intensity": 10
+        },
+        {
+            "latitude": 11.260749888916406,
+            "longitude": -3.5869527554985248,
+            "intensity": 10
+        }
+        ]
+    }
+]
