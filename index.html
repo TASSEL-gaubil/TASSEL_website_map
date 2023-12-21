@@ -148,7 +148,7 @@
     </div>
 
     <script>
-        console.log("V2110")
+        console.log("V1043")
         let infoPanelVisible = false;
         let mapInPanel;
         let map;
@@ -261,7 +261,7 @@
             });
 
             // recupérer les coordonnées des segments à partir du fichier JSON (requête fetch)
-            fetch('test1_seg.json')
+            fetch('segment_lat_long2.json')
                 // convertit la réponse en JSON
                 .then(response => response.json())
                 // traitement des donnnées récupérées
@@ -278,30 +278,30 @@
 
                         // Loop through the data and create forms for each segment
 
-                        const coordinates = areaData.coordinates.map(coord => ({
+                        const coordinates = areaData.perimeter_pixel_coordinates.map(coord => ({
                             lat: parseFloat(coord.latitude),
                             lng: parseFloat(coord.longitude),
                             intensity: parseFloat(coord.intensity),
-                            //map: map
+                            map: map
                         }));
                         
                         // Get the perimeter pixels
-                        const perimeterPixels = getPerimeterPixels(coordinates);
-                        // Create a polygon with perimeter pixels
-                        const perimeterPolygon = new google.maps.Polygon({
-                            paths: perimeterPixels,
-                            map: map,
-                            strokeColor: '#FF0000', // Red outline
-                            strokeOpacity: 1,
-                            strokeWeight: 2,
-                            fillColor: '#FF0000',
-                            fillOpacity: 0.2
-                        });
+                        // const perimeterPixels = getPerimeterPixels(coordinates);
+                        // // Create a polygon with perimeter pixels
+                        // const perimeterPolygon = new google.maps.Polygon({
+                        //     paths: perimeterPixels,
+                        //     map: map,
+                        //     strokeColor: '#FF0000', // Red outline
+                        //     strokeOpacity: 1,
+                        //     strokeWeight: 2,
+                        //     fillColor: '#FF0000',
+                        //     fillOpacity: 0.2
+                        // });
 
                         // Create a marker for each coordinate and add it to the main map
                         coordinates.forEach(coord => {
                             const dot = new google.maps.Marker({
-                                position: new google.maps.LatLng(coord.lat, coord.lng),
+                                position: new google.maps.LatLng(coord.latitude, coord.longitude),
                                 map: map,
                                 icon: {
                                     path: google.maps.SymbolPath.CIRCLE,
