@@ -148,7 +148,7 @@
     </div>
 
     <script>
-        console.log("V1043")
+        console.log("1157")
         let infoPanelVisible = false;
         let mapInPanel;
         let map;
@@ -314,7 +314,7 @@
                         });
 
                         // Add click event listener to the polygon to open the info panel with data
-                        perimeterPolygon.addListener("click", () => {
+                        coordinates.addListener("click", () => {
 
                             const infoContent = `
                                 <h3>Segment ID: ${areaData.segment_id}</h3>
@@ -331,7 +331,7 @@
 
                             //console.log('coucou')
                             // Calculate the perimeter of the polygon
-                            const perimeter = getPerimeterPixels(polygonCoordinates);
+                            // const perimeter = getPerimeterPixels(polygonCoordinates);
 
                             // Calculer le centre géométrique du polygone
                             const centerLat = polygonCoordinates.reduce((sum, coord) => sum + coord.lat, 0) / polygonCoordinates.length;
