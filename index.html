@@ -164,8 +164,47 @@
                 infoPanel.style.transform = "translateX(100%)"; // Hide the panel
             }
         }
-
         function getPerimeterPixels(coordinates) {
+            // Step 1: Find the starting point
+            let start = coordinates.reduce((min, p) => p[1] < min[1] || (p[1] === min[1] && p[0] < min[0]) ? p : min, coordinates[0]);
+
+            // Define the 8 directions of movement (left, up-left, up, up-right, right, down-right, down, down-left)
+            let directions = [[0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1]];
+
+            // Initialize the perimeter with the starting point
+            let perimeter = [start];
+
+            // The initial direction is to the right
+            let direction = 4;
+
+            while (true) {
+                for (let i = 0; i < 8; i++) {
+                    // Calculate the direction to look at
+                    let d = (direction + i) % 8;
+
+                    // Calculate the coordinates of the neighbor
+                    let neighbor = [perimeter[perimeter.length - 1][0] + directions[d][0], perimeter[perimeter.length - 1][1] + directions[d][1]];
+
+                    if (coordinates.some(p => p[0] === neighbor[0] && p[1] === neighbor[1])) {
+                        // If the neighbor is part of the shape, it's the next pixel of the perimeter
+                        perimeter.push(neighbor);
+
+                        // The next direction to look at is the one to the right of the current direction
+                        direction = (d + 5) % 8;
+
+                        break;
+                    }
+                }
+
+                if (perimeter[perimeter.length - 1][0] === start[0] && perimeter[perimeter.length - 1][1] === start[1]) {
+                    // If we have returned to the starting point, the perimeter is complete
+                    break;
+                }
+            }
+
+            return perimeter;
+        }
+        /* function getPerimeterPixels(coordinates) {
             // Function to calculate the cross product of vectors (p1p2) and (p1p3)
             function crossProduct(p1, p2, p3) {
                 return (p2.longitude - p1.longitude) * (p3.latitude - p1.latitude) -
@@ -225,7 +264,7 @@
             const convexHull = upperHull.slice(0, upperHull.length).concat(lowerHull.slice(0, lowerHull.length));
 
             return convexHull;
-        }
+        } */
 
 
         // fonction qui est appelée lorsque l'API google map est chargée (javascript)
